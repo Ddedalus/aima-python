@@ -1,6 +1,6 @@
-from Agents import *
+from agents import *
 
 def OurVacuum():
     Env = TrivialVacuumEnvironment()
-    Env.Add.Things(TraceAgent(RandomVacuumAgent()))
+    Env.add_things(TraceAgent(RandomVacuumAgent()))
     return Env
