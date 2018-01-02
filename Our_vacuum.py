@@ -31,4 +31,4 @@ env.run(100)
 def OurVacuum():
     Env = TrivialVacuumEnvironment()
     Env.add_thing(TraceAgent(RandomVacuumAgent()))
-    return Env #dupa
+    return Env
