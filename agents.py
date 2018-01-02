@@ -108,7 +108,7 @@ def TraceAgent(agent):
 
     def new_program(percept):
         action = old_program(percept)
-        print('{} perceives {} and does {}'.format(agent, percept, action))
+        print('{} perceives {} and does {}; performance is {}'.format(agent, percept, action, agent.performance))
         return action
     agent.program = new_program
     return agent
@@ -249,7 +249,8 @@ class Environment:
 
     def execute_action(self, agent, action):
         """Change the world to reflect this action. (Implement this.)"""
-        raise NotImplementedError
+        if action != "":
+            raise NotImplementedError
 
     def default_location(self, thing):
         """Default location to place a new thing with unspecified location."""
@@ -813,6 +814,7 @@ class WumpusEnvironment(XYEnvironment):
         result = []
         x_start, y_start = (0, 0) if show_walls else (1, 1)
 
+
         if show_walls:
             x_end, y_end = self.width, self.height
         else:
@@ -870,7 +872,6 @@ class WumpusEnvironment(XYEnvironment):
 
         if isinstance(agent, Explorer) and self.in_danger(agent):
             return
-
         agent.bump = False
         if action == 'TurnRight':
             agent.direction += Direction.R
