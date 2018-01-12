@@ -42,11 +42,13 @@ class QueensEnv:
 			if mes == "Success":
 				self.stats.addWin(t)
 				# self.solutions.add(b)
+				print("Success!!!")
 				t.print_board()
-				t.randomize_board()
-			elif mes == "Pass":
+				t.randomize_board(self.queens)
+			elif mes == "NoOp":
 				self.stats.addLoss(t)
-				t.randomize_board()
+				print("No luck, reset.")
+				t.randomize_board(self.queens)
 			else:
 				t.perf += 1
 				t.board = new_state
@@ -68,7 +70,7 @@ class StatsModule:
 	def addWin(self, Table):
 		pass
 	
-	def addLost(self, Table):
+	def addLoss(self, Table):
 		pass
 	
 	def printStats(self):
