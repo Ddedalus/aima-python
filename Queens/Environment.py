@@ -86,7 +86,7 @@ class StatsModule:
 	
 	def print_stats(self, tables, queens):
 		for t in tables:
-			print("Agent", t.agent)
+			print("Agent with limit", t.agent.threshold)
 			self.print_table_stats(t)
 
 	def print_table_stats(self, table):
