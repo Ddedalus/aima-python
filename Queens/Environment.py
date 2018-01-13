@@ -30,7 +30,6 @@ class QueensEnv:
 	and performance measurement calls may be implemented. """
 	def __init__(self, agents, queens=8, master_agents=[]):
 		assert isinstance(agents, list)
-		self.solutions = {}
 		self.queens = queens
 		self.tables = [Table(a, queens) for a in agents]
 		self.master_agents = master_agents
@@ -39,15 +38,11 @@ class QueensEnv:
 	def step(self):
 		for t in self.tables:
 			mes, new_state = t.agent(t.board)
-			if mes == "Success":
+			if isinstance(mes, str) and mes == "Success":
 				self.stats.addWin(t)
-				# self.solutions.add(b)
-				print("Success!!!")
-				t.print_board()
 				t.randomize_board(self.queens)
-			elif mes == "NoOp":
+			elif isinstance(mes, str) and mes == "NoOp":
 				self.stats.addLoss(t)
-				print("No luck, reset.")
 				t.randomize_board(self.queens)
 			else:
 				t.perf += 1
@@ -59,19 +54,32 @@ class QueensEnv:
 	def run(self, steps):
 		for i in range(steps):
 			self.step()
+			
+	def find_sol(self, how_many):
+		while len(self.stats.solutions)  < how_many:
+			self.step()
 
 
 class StatsModule:
 	""" Class to measure agent's performance. Should be called on every win and loss which occurs
 	in the environment. """
 	def __init__(self, count):
-		pass
+		self.count = count
+		self.solutions = set()
+		self.win_times, self.loss_times = [], []
 	
-	def addWin(self, Table):
-		pass
+	def addWin(self, table):
+		self.win_times.append(table.perf)
+		if not tuple(table.board.tolist()) in self.solutions:
+			self.solutions.add(tuple(table.board.tolist()))
+			print(len(self.solutions))
 	
-	def addLoss(self, Table):
-		pass
+	def addLoss(self, table):
+		self.loss_times.append(table.perf)
 	
 	def printStats(self):
-		pass
+		total = len(self.win_times) + len(self.loss_times)
+		print("Found {} solutions".format(len(self.solutions)))
+		print("Win ratio:", len(self.win_times)/total)
+		print("Avg. win time:", np.average(self.win_times))
+		print("Avg. loss time:", np.average(self.loss_times))

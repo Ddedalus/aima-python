@@ -31,10 +31,9 @@ class SteepestAscentAgent:
 			if cols == 0:
 				return "Success", state
 			else:
-				update = check_actions(state, 1)[0]
-				if update['count'] < cols:
-					# print("Returning ", update)
-					return "", update['state']
+				update = check_actions(state, 10)
+				if update['count'][0] < cols:
+					return update, update['state'][0]
 				else:
 					return "NoOp", state
 		
