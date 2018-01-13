@@ -1,7 +1,7 @@
-from utility_measures import *
+from Queens.utility_measures import *
 
 def steepestAscentAgent():
-	state = yield
+	state = yield "steepestAscentAgent"
 	while True:
 		cols = count_collisions(state)
 		if cols == 0:
@@ -15,7 +15,7 @@ def steepestAscentAgent():
 
 
 def plateauExplorerGenerator():
-	state = yield
+	state = yield "plateauExplorerGenerator"
 	plateau = None
 	while True:
 		cols = count_collisions(state)
@@ -39,7 +39,7 @@ def plateauExplorerGenerator():
 
 
 def plateauLimitedGenerator(threshold):
-	state = yield
+	state = yield "Plateau limited to {}".format(threshold)
 	plateau, count = None, 0
 	while True:
 		cols = count_collisions(state)

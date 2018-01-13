@@ -9,6 +9,7 @@ class Table:
 		self.perf = 0
 		self.board = self.randomize_board(queens)
 		self.agent = agent
+		self.name = agent.send(None)
 
 	def randomize_board(self, queens):
 		self.board = np.random.randint(0, queens - 1, queens)
@@ -85,18 +86,18 @@ class StatsModule:
 		self.loss_times[table.agent].append(table.perf)
 	
 	def print_stats(self, tables, queens):
-		for t in tables:
-			# print("Agent with limit", t.agent.threshold)
+		for t in sorted(tables, key=lambda t: len(self.solutions[t.agent]), reverse=True):
 			self.print_table_stats(t)
 
 	def print_table_stats(self, table):
 		win = len(self.win_times[table.agent])
 		loss = len(self.loss_times[table.agent])
-		print("Found {} solutions".format(len(self.solutions[table.agent])))
+		print("Agent {} found {} solutions".format(table.name, len(self.solutions[table.agent])))
 		if win + loss > 0:
 			print("Win ratio:", win/(win + loss))
-			print("Avg. win time:", np.average(self.win_times[table.agent]))
+			print("Avg. win time:", np.mean(self.win_times[table.agent]))
 			print("Avg. loss time:", np.average(self.loss_times[table.agent]))
+			print()
 		
 		
 		

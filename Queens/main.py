@@ -1,20 +1,19 @@
-from Environment import QueensEnv
-from Agents import *
+from Queens.Environment import QueensEnv
+from Queens.Agents import *
 
-queens = 8
+queens = 16
 k = 8
 
 # plateauLimitedGenerator = PlateauLimitedAgent()
 # stepGenerator = SteepestAscentAgent()
 agents = [plateauLimitedGenerator(t) for t in range(k)]
-for a in agents: a.send(None)
 
 a = steepestAscentAgent()
 a.send(None)
-env = QueensEnv([a], queens=queens)
+env = QueensEnv(agents, queens=queens)
 
 # env.find_sol(92)
-env.find_sol(20)
+env.find_sol(10)
 # print(env.stats.solutions)
 
 
