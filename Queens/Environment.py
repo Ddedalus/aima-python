@@ -37,7 +37,7 @@ class QueensEnv:
 
 	def step(self):
 		for t in self.tables:
-			mes, new_state = t.agent(t.board)
+			mes, new_state = t.agent.send(t.board)
 			if isinstance(mes, str) and mes == "Success":
 				self.stats.add_win(t)
 				t.randomize_board(self.queens)
@@ -86,7 +86,7 @@ class StatsModule:
 	
 	def print_stats(self, tables, queens):
 		for t in tables:
-			print("Agent with limit", t.agent.threshold)
+			# print("Agent with limit", t.agent.threshold)
 			self.print_table_stats(t)
 
 	def print_table_stats(self, table):

@@ -1,17 +1,17 @@
-import numpy as np
 from Environment import QueensEnv
-from PlateauExplorerAgent import PlateauExplorerAgent, PlateauLimitedAgent
-from SteepestAscentAgent import SteepestAscentAgent
+from Agents import *
 
 queens = 8
 k = 8
 
-plateauLimitedGenerator = PlateauLimitedAgent()
-stepGenerator = SteepestAscentAgent()
+# plateauLimitedGenerator = PlateauLimitedAgent()
+# stepGenerator = SteepestAscentAgent()
+agents = [plateauLimitedGenerator(t) for t in range(k)]
+for a in agents: a.send(None)
 
-env = QueensEnv(
-	[PlateauLimitedAgent.new_agent(t) for t in range(1, k)],
-                queens=queens)
+a = steepestAscentAgent()
+a.send(None)
+env = QueensEnv([a], queens=queens)
 
 # env.find_sol(92)
 env.find_sol(20)

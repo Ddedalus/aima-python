@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def count_collisions(board):
 	count = 0
 	queens = len(board)
@@ -24,5 +23,3 @@ def check_actions(board):
 	
 	ret = np.sort(d, axis=None, order='count')
 	return ret
-
-
