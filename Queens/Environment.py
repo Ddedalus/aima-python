@@ -33,16 +33,16 @@ class QueensEnv:
 		self.queens = queens
 		self.tables = [Table(a, queens) for a in agents]
 		self.master_agents = master_agents
-		self.stats = StatsModule(len(agents))
+		self.stats = StatsModule(agents)
 
 	def step(self):
 		for t in self.tables:
 			mes, new_state = t.agent(t.board)
 			if isinstance(mes, str) and mes == "Success":
-				self.stats.addWin(t)
+				self.stats.add_win(t)
 				t.randomize_board(self.queens)
 			elif isinstance(mes, str) and mes == "NoOp":
-				self.stats.addLoss(t)
+				self.stats.add_loss(t)
 				t.randomize_board(self.queens)
 			else:
 				t.perf += 1
@@ -56,30 +56,52 @@ class QueensEnv:
 			self.step()
 			
 	def find_sol(self, how_many):
-		while len(self.stats.solutions)  < how_many:
+		while True:
 			self.step()
+			for t in self.tables:
+				if len(self.stats.solutions[t.agent]) >= how_many:
+					self.print_stats()
+					return
+
+	def print_stats(self):
+		self.stats.print_stats(self.tables, self.queens)
 
 
 class StatsModule:
 	""" Class to measure agent's performance. Should be called on every win and loss which occurs
 	in the environment. """
-	def __init__(self, count):
-		self.count = count
-		self.solutions = set()
-		self.win_times, self.loss_times = [], []
-	
-	def addWin(self, table):
-		self.win_times.append(table.perf)
+	def __init__(self, agents):
+		self.count = len(agents)
+		self.solutions = dict([(k, set()) for k in agents])
+		self.win_times = dict([(k,[]) for k in agents])
+		self.loss_times = dict([(k, []) for k in agents])
+		
+	def add_win(self, table):
+		self.win_times[table.agent].append(table.perf)
 		if not tuple(table.board.tolist()) in self.solutions:
-			self.solutions.add(tuple(table.board.tolist()))
-			# print(len(self.solutions))
+			self.solutions[table.agent].add(tuple(table.board.tolist()))
 	
-	def addLoss(self, table):
-		self.loss_times.append(table.perf)
+	def add_loss(self, table):
+		self.loss_times[table.agent].append(table.perf)
 	
-	def printStats(self):
-		total = len(self.win_times) + len(self.loss_times)
-		print("Found {} solutions".format(len(self.solutions)))
-		print("Win ratio:", len(self.win_times)/total)
-		print("Avg. win time:", np.average(self.win_times))
-		print("Avg. loss time:", np.average(self.loss_times))
+	def print_stats(self, tables, queens):
+		for t in tables:
+			print("Agent", t.agent)
+			self.print_table_stats(t)
+
+	def print_table_stats(self, table):
+		win = len(self.win_times[table.agent])
+		loss = len(self.loss_times[table.agent])
+		print("Found {} solutions".format(len(self.solutions[table.agent])))
+		if win + loss > 0:
+			print("Win ratio:", win/(win + loss))
+			print("Avg. win time:", np.average(self.win_times[table.agent]))
+			print("Avg. loss time:", np.average(self.loss_times[table.agent]))
+		
+		
+		
+		
+		
+		
+		
+		
