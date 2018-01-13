@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class SteepestAscentAgent:
+class PlateauExplorerAgent:
 	@staticmethod
 	def new_agent():
 		def count_collisions(board):
@@ -25,6 +25,7 @@ class SteepestAscentAgent:
 				run[q] = board[q]
 			
 			ret = np.sort(d, axis=None, order='count')
+			how_many = np.count_nonzero(ret['count'] == ret['count'][0])
 			return ret[:how_many]
 		
 		def program(state):
@@ -34,8 +35,16 @@ class SteepestAscentAgent:
 			else:
 				update = check_actions(state, 10)
 				if update['count'][0] < cols:
+					program.plateau = None
 					return update, update['state'][0]
-				else:
+				elif program.plateau is None:   # we arrived to a plateau
+					program.plateau = update[1:]
+					return "Plateau", update['state'][0]
+				elif len(program.plateau) > 0:  # there are options left to be explored
+					ans = program.plateau['state'][0]
+					program.plateau = program.plateau[1:]
+					return "Plateau", ans
+				else:   # explored plateau, nowhere to go
 					return "NoOp", state
 		
 		return program

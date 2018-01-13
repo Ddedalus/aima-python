@@ -72,7 +72,7 @@ class StatsModule:
 		self.win_times.append(table.perf)
 		if not tuple(table.board.tolist()) in self.solutions:
 			self.solutions.add(tuple(table.board.tolist()))
-			print(len(self.solutions))
+			# print(len(self.solutions))
 	
 	def addLoss(self, table):
 		self.loss_times.append(table.perf)

@@ -1,16 +1,22 @@
 import numpy as np
 from Environment import QueensEnv
+from PlateauExplorerAgent import PlateauExplorerAgent
 from SteepestAscentAgent import SteepestAscentAgent
 
-queens = 9
+queens = 8
 k = 8
 
-agentGenerator = SteepestAscentAgent()
-agent = agentGenerator.new_agent()
-a2 = agentGenerator.new_agent()
-env = QueensEnv([agent], queens=queens)
+plateauGenerator = PlateauExplorerAgent()
+stepGenerator = SteepestAscentAgent()
 
-env.find_sol(400)
+env = QueensEnv([plateauGenerator.new_agent()], queens=queens)
+env2 = QueensEnv([stepGenerator.new_agent()], queens=queens)
 
-print(env.stats.solutions)
-env.stats.printStats()
+# env.find_sol(92)
+sol_no = []
+for env in [env, env2]:
+	env.find(85)
+	# print(env.stats.solutions)
+	env.stats.printStats()
+
+
