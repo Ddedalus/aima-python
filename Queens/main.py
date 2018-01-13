@@ -1,7 +1,7 @@
 from Queens.Environment import QueensEnv
 from Queens.Agents import *
 
-queens = 16
+queens = 8
 k = 8
 
 # plateauLimitedGenerator = PlateauLimitedAgent()
@@ -13,7 +13,5 @@ a.send(None)
 env = QueensEnv(agents, queens=queens)
 
 # env.find_sol(92)
-env.find_sol(10)
+env.find_sol(2)
 # print(env.stats.solutions)
-
-

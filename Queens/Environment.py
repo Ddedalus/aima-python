@@ -1,5 +1,5 @@
 import numpy as np
-
+import warnings
 class Table:
 	"""
 	Simple storage class for single agent and it's board. Provides plotting utilities but does not
@@ -87,7 +87,9 @@ class StatsModule:
 	
 	def print_stats(self, tables, queens):
 		for t in sorted(tables, key=lambda t: len(self.solutions[t.agent]), reverse=True):
-			self.print_table_stats(t)
+			with warnings.catch_warnings():
+				warnings.simplefilter("ignore", category=RuntimeWarning)
+				self.print_table_stats(t)
 
 	def print_table_stats(self, table):
 		win = len(self.win_times[table.agent])
@@ -96,7 +98,7 @@ class StatsModule:
 		if win + loss > 0:
 			print("Win ratio:", win/(win + loss))
 			print("Avg. win time:", np.mean(self.win_times[table.agent]))
-			print("Avg. loss time:", np.average(self.loss_times[table.agent]))
+			print("Avg. loss time:", np.mean(self.loss_times[table.agent]))
 			print()
 		
 		
