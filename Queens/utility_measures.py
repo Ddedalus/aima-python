@@ -1,5 +1,10 @@
 import numpy as np
 
+
+def dt(queens):
+	return np.dtype([('count', int), ('state', int, (queens,))])
+
+
 def count_collisions(board):
 	count = 0
 	queens = len(board)
@@ -12,8 +17,7 @@ def count_collisions(board):
 
 def check_actions(board):
 	queens = len(board)
-	dt = np.dtype([('count', int), ('state', int, (queens,))])
-	d = np.empty([queens, queens], dtype=dt)
+	d = np.empty([queens, queens], dtype=dt(queens))
 	run = np.array(board)
 	for q in range(queens):
 		for i in range(queens):

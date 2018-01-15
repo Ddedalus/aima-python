@@ -10,6 +10,7 @@ class Table:
 		self.board = self.randomize_board(queens)
 		self.agent = agent
 		self.name = agent.send(None)
+		self.message = ""
 
 	def randomize_board(self, queens):
 		self.board = np.random.randint(0, queens - 1, queens)
@@ -31,19 +32,20 @@ class QueensEnv:
 	and performance measurement calls may be implemented. """
 	def __init__(self, agents, queens=8, master_agents=[]):
 		assert isinstance(agents, list)
+		assert isinstance(master_agents, list)
 		self.queens = queens
 		self.tables = [Table(a, queens) for a in agents]
-		self.master_agents = master_agents
+		self.master_agents = [Table(a, queens) for a in master_agents]
 		self.stats = StatsModule(agents)
 		self.steps = 0
 
 	def step(self):
 		for t in self.tables:
-			mes, new_state = t.agent.send(t.board)
-			if isinstance(mes, str) and mes == "Success":
+			t.message, new_state = t.agent.send(t.board)
+			if isinstance(t.message, str) and t.message == "Success":
 				self.stats.add_win(t)
 				t.randomize_board(self.queens)
-			elif isinstance(mes, str) and mes == "NoOp":
+			elif isinstance(t.message, str) and t.message == "NoOp":
 				self.stats.add_loss(t)
 				t.randomize_board(self.queens)
 			else:
@@ -52,8 +54,8 @@ class QueensEnv:
 		self.steps += 1
 		
 		for su in self.master_agents:
-			pass
-		
+			su.agent.send(self.tables)
+
 	def run(self, steps):
 		for i in range(steps):
 			self.step()

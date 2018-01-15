@@ -9,7 +9,7 @@ def steepestAscentAgent():
 		else:
 			update = check_actions(state)
 			if update['count'][0] < cols:
-				state = yield update, update['state'][0]
+				state = yield update[:len(state)], update['state'][0]
 			else:
 				state = yield "NoOp", state
 
@@ -66,3 +66,20 @@ def plateauLimitedGenerator(threshold):
 			
 			else:  # explored plateau or time over, nowhere to go
 				state = yield "NoOp", state
+
+
+def masterBeamGenerator(queens):
+	tables = yield "Master Beam Generator"
+	k = len(tables)
+	while True:
+		av = np.empty(0, dtype=dt(queens))
+		for t in tables:
+			if not isinstance(t.message, str):
+				av = np.unique(np.concatenate((av[:k], t.message)))
+				av.sort(kind='mergesort')
+				t.message = None
+		
+		for t, s in zip(tables, av):
+			if not isinstance(t.message, str):
+				t.state = s['state']
+		tables = yield
