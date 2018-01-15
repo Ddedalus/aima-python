@@ -13,5 +13,5 @@ a.send(None)
 env = QueensEnv(agents, queens=queens)
 
 # env.find_sol(92)
-env.find_sol(2)
+env.find_sol(20)
 # print(env.stats.solutions)

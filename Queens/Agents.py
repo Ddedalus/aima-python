@@ -39,7 +39,7 @@ def plateauExplorerGenerator():
 
 
 def plateauLimitedGenerator(threshold):
-	state = yield "Plateau limited to {}".format(threshold)
+	state = yield "PlateauLimited, max={}".format(threshold)
 	plateau, count = None, 0
 	while True:
 		cols = count_collisions(state)

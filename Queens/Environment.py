@@ -35,6 +35,7 @@ class QueensEnv:
 		self.tables = [Table(a, queens) for a in agents]
 		self.master_agents = master_agents
 		self.stats = StatsModule(agents)
+		self.steps = 0
 
 	def step(self):
 		for t in self.tables:
@@ -48,6 +49,7 @@ class QueensEnv:
 			else:
 				t.perf += 1
 				t.board = new_state
+		self.steps += 1
 		
 		for su in self.master_agents:
 			pass
@@ -65,6 +67,7 @@ class QueensEnv:
 					return
 
 	def print_stats(self):
+		print("Total steps:", self.steps)
 		self.stats.print_stats(self.tables, self.queens)
 
 
