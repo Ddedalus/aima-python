@@ -10,6 +10,8 @@ agents = [steepestAscentAgent() for t in range(k)]
 master = masterBeamGenerator(queens)
 env = QueensEnv(agents, master=master, queens=queens)
 
-env.run(400)
-env.print_stats()
+
+env.find_sol_master(40)
+# env.run(400)
+# env.print_stats()
 # print(env.stats.solutions)
