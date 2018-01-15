@@ -1,43 +1,16 @@
-import numpy as np
-import warnings
-class Table:
-	"""
-	Simple storage class for single agent and it's board. Provides plotting utilities but does not
-	tackle actions or agent messages. Also stores performance measure and random board generator.
-	"""
-	def __init__(self, agent, queens):
-		self.perf = 0
-		self.board = self.randomize_board(queens)
-		self.agent = agent
-		self.name = agent.send(None)
-		self.message = ""
-
-	def randomize_board(self, queens):
-		self.board = np.random.randint(0, queens - 1, queens)
-		self.perf = 0
-		return self.board
-
-	def plot_board(self):
-		print("--" * (len(self.board) + 2))
-		for row in self.board:
-			print(str(row) + " " + "  " * row + "x")
-		print("--" * (len(self.board) + 2))
-		
-	def print_board(self):
-		print(self.board.tolist())
+from Queens.Table import Table
+from Queens.Stats import StatsModule
 
 
 class QueensEnv:
 	""" Environment for all agents and boards. Here steps are evaluated, found solutions stored
 	and performance measurement calls may be implemented. """
-	def __init__(self, agents, queens=8, master_agents=[]):
+	def __init__(self, agents, queens=8, master=None):
 		assert isinstance(agents, list)
-		assert isinstance(master_agents, list)
 		self.queens = queens
 		self.tables = [Table(a, queens) for a in agents]
-		self.master_agents = [Table(a, queens) for a in master_agents]
-		self.stats = StatsModule(agents)
-		self.steps = 0
+		self.master = [] if master is None else [Table(master, queens)]
+		self.stats = StatsModule(agents, self.master[0])
 
 	def step(self):
 		for t in self.tables:
@@ -51,9 +24,9 @@ class QueensEnv:
 			else:
 				t.perf += 1
 				t.board = new_state
-		self.steps += 1
+		self.stats.steps += 1
 		
-		for su in self.master_agents:
+		for su in self.master:
 			su.agent.send(self.tables)
 
 	def run(self, steps):
@@ -69,47 +42,4 @@ class QueensEnv:
 					return
 
 	def print_stats(self):
-		print("Total steps:", self.steps)
-		self.stats.print_stats(self.tables, self.queens)
-
-
-class StatsModule:
-	""" Class to measure agent's performance. Should be called on every win and loss which occurs
-	in the environment. """
-	def __init__(self, agents):
-		self.count = len(agents)
-		self.solutions = dict([(k, set()) for k in agents])
-		self.win_times = dict([(k,[]) for k in agents])
-		self.loss_times = dict([(k, []) for k in agents])
-		
-	def add_win(self, table):
-		self.win_times[table.agent].append(table.perf)
-		if not tuple(table.board.tolist()) in self.solutions:
-			self.solutions[table.agent].add(tuple(table.board.tolist()))
-	
-	def add_loss(self, table):
-		self.loss_times[table.agent].append(table.perf)
-	
-	def print_stats(self, tables, queens):
-		for t in sorted(tables, key=lambda t: len(self.solutions[t.agent]), reverse=True):
-			with warnings.catch_warnings():
-				warnings.simplefilter("ignore", category=RuntimeWarning)
-				self.print_table_stats(t)
-
-	def print_table_stats(self, table):
-		win = len(self.win_times[table.agent])
-		loss = len(self.loss_times[table.agent])
-		print("Agent {} found {} solutions".format(table.name, len(self.solutions[table.agent])))
-		if win + loss > 0:
-			print("Win ratio:", win/(win + loss))
-			print("Avg. win time:", np.mean(self.win_times[table.agent]))
-			print("Avg. loss time:", np.mean(self.loss_times[table.agent]))
-			print()
-		
-		
-		
-		
-		
-		
-		
-		
+		self.stats.print_stats(self.tables)

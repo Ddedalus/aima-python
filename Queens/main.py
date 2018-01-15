@@ -2,14 +2,14 @@ from Queens.Environment import QueensEnv
 from Queens.Agents import *
 
 queens = 8
-k = 8
+k = 4
 
 # plateauLimitedGenerator = PlateauLimitedAgent()
 # stepGenerator = SteepestAscentAgent()
 agents = [steepestAscentAgent() for t in range(k)]
-masters = [masterBeamGenerator(queens)]
-env = QueensEnv(agents, master_agents=masters, queens=queens)
+master = masterBeamGenerator(queens)
+env = QueensEnv(agents, master=master, queens=queens)
 
-env.run(200)
+env.run(400)
 env.print_stats()
 # print(env.stats.solutions)
