@@ -1,8 +1,10 @@
 from Queens.utility_measures import *
 
+
 def steepestAscentAgent():
 	state = yield "steepestAscentAgent"
 	while True:
+		# yield "Success", np.arange(0, 7, 1, dtype=int)
 		cols = count_collisions(state)
 		if cols == 0:
 			state = yield "Success", state

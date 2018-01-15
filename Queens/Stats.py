@@ -10,11 +10,14 @@ class StatsModule:
 	 - solutions - set of distinct solutions found by each agent
 	"""
 	
-	def __init__(self, agents, master):
-		self.master_tab = master
+	def __init__(self, agents, master=None):
 		self.count = len(agents)
 		self.solutions = dict([(k, set()) for k in agents])
-		self.solutions[master.agent] = set()
+		if master:
+			self.master = master
+			self.solutions[master.agent] = set()
+		else:
+			self.master = None
 		self.win_times = dict([(k, []) for k in agents])
 		self.loss_times = dict([(k, []) for k in agents])
 		self.steps, self.ticks = 0, 0
@@ -27,9 +30,10 @@ class StatsModule:
 		self.ticks += sum([t.perf for t in tables])
 		
 		print("Total ticks taken:", self.ticks)
-		print("{} found {} solutions using {} threads\n"
-		      .format(self.master_tab.name, len(self.solutions[self.master_tab.agent]),
-		              len(tables)))
+		if self.master:
+			print("{} found {} solutions using {} threads\n"
+			      .format(self.master.name, len(self.solutions[self.master.agent]),
+			              len(tables)))
 		print()
 		
 		# table stats
@@ -56,7 +60,8 @@ class StatsModule:
 		self.win_times[table.agent].append(table.perf)
 		if not tuple(table.board.tolist()) in self.solutions:
 			self.solutions[table.agent].add(tuple(table.board.tolist()))
-			self.solutions[self.master_tab.agent] \
+			if self.master:
+				self.solutions[self.master.agent] \
 				.add((tuple(table.board.tolist())))
 			return 1
 		self.ticks += table.perf

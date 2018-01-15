@@ -14,9 +14,9 @@ class QueensEnv:
 		assert isinstance(agents, list)
 		self.queens = queens
 		self.tables = [Table(a, queens) for a in agents]
-		self.master = [] if master is None else [Table(master, queens)]
-		self.stats = StatsModule(agents, self.master[0])
-		self.sol_count = 0
+		if master:
+			self.master = Table(master, queens)
+		self.stats = StatsModule(agents, self.master)
 
 	def step(self):
 		""" This is a single iteration of search. Every agent returns message and new state.
@@ -24,7 +24,7 @@ class QueensEnv:
 		for t in self.tables:
 			t.message, new_state = t.agent.send(t.board)
 			if isinstance(t.message, str) and t.message == "Success":
-				self.sol_count += self.stats.add_win(t)
+				self.stats.add_win(t)
 				t.randomize_board(self.queens)
 			elif isinstance(t.message, str) and t.message == "NoOp":
 				self.stats.add_loss(t)
@@ -34,8 +34,8 @@ class QueensEnv:
 				t.board = new_state
 		self.stats.steps += 1
 		
-		for su in self.master:
-			su.agent.send(self.tables)
+		if self.master:
+			self.master.agent.send(self.tables)
 
 	def run(self, steps):
 		"""Shorthand to run multiple steps"""
@@ -54,11 +54,9 @@ class QueensEnv:
 				
 	def find_sol_master(self, how_many):
 		"""The same as above but all found solutions are on account of master agent"""
-		while True:
+		while len(self.stats.solutions[self.master.agent]) < how_many:
 			self.step()
-			if self.sol_count >= how_many:
-				self.print_stats()
-				return
+		self.print_stats()
 
 	def print_stats(self):
 		self.stats.print_stats(self.tables)
