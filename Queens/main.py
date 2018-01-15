@@ -1,8 +1,7 @@
 from Queens.Environment import QueensEnv
 from Queens.Agents import *
 
-queens = 8
-k = 4
+queens = 8  # how big is the
 
 # plateauLimitedGenerator = PlateauLimitedAgent()
 # stepGenerator = SteepestAscentAgent()
@@ -16,3 +15,4 @@ env.find_sol_master(82)
 # env.run(400)
 # env.print_stats()
 # print(env.stats.solutions)
+
