@@ -41,22 +41,30 @@ class QueensEnv:
 		"""Shorthand to run multiple steps"""
 		for i in range(steps):
 			self.step()
+			progress_bar(i, steps, "steps done.")
 
 	def find_sol(self, how_many):
 		"""Run until specified amount of distinct solutions is found by one of agents. May be
 		used to compare performance in terms of steps/ticks"""
-		while True:
+		max_found = 0
+		while max_found < how_many:
 			self.step()
-			for t in self.tables:
-				if len(self.stats.solutions[t.agent]) >= how_many:
-					self.print_stats()
-					return
-				
+			max_found = max(self.stats.solutions.values())
+			progress_bar(max_found, how_many, "solutions found")
+		self.print_stats()
+
 	def find_sol_master(self, how_many):
 		"""The same as above but all found solutions are on account of master agent"""
-		while len(self.stats.solutions[self.master.agent]) < how_many:
+		found = 0
+		while found < how_many:
 			self.step()
+			found = len(self.stats.solutions[self.master.agent])
+			progress_bar(found, how_many, "solutions found by master")
 		self.print_stats()
 
 	def print_stats(self):
 		self.stats.print_stats(self.tables)
+
+
+def progress_bar(current, total, what):
+	print('\r', current, "out of", total, what, end="", flush=True)

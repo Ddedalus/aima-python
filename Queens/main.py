@@ -6,12 +6,12 @@ k = 4
 
 # plateauLimitedGenerator = PlateauLimitedAgent()
 # stepGenerator = SteepestAscentAgent()
-agents = [steepestAscentAgent() for t in range(2)]
+agents = [steepestAscentAgent() for t in range(4)]
 master = masterBeamGenerator(queens)
 env = QueensEnv(agents, master=master, queens=queens)
 
 
-env.find_sol_master(40)
+env.find_sol_master(82)
 # env.find_sol(10)
 # env.run(400)
 # env.print_stats()
