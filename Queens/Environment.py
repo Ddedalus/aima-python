@@ -16,6 +16,8 @@ class QueensEnv:
 		self.tables = [Table(a, queens) for a in agents]
 		if master:
 			self.master = Table(master, queens)
+		else:
+			self.master = None
 		self.stats = StatsModule(agents, self.master)
 
 	def step(self):
@@ -49,7 +51,7 @@ class QueensEnv:
 		max_found = 0
 		while max_found < how_many:
 			self.step()
-			max_found = max(self.stats.solutions.values())
+			max_found = max(map(len, self.stats.solutions.values()))
 			progress_bar(max_found, how_many, "solutions found")
 		self.print_stats()
 
