@@ -59,8 +59,8 @@ class StatsModule:
 	def plot_board(self, board):
 		q = len(board)
 		im = np.zeros((q, q))
-		for i in board:
-			im[i, board[i]] = 1
+		for i in range(q):
+			im[board[i], i] = 1
 		dpp = 15
 		im = np.repeat(np.repeat(im, dpp, axis=0), dpp, axis=1)
 		num = "".join(map(lambda k: str(k), board))

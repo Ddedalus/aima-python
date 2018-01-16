@@ -1,4 +1,4 @@
-from Queens.utility_measures import *
+from utility_measures import *
 
 
 def steepestAscentAgent():

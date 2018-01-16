@@ -1,5 +1,5 @@
-from Queens.Table import Table
-from Queens.Stats import StatsModule
+from Table import Table
+from Stats import StatsModule
 
 
 class QueensEnv:
