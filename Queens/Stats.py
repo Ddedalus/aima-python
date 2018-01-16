@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import warnings
 
 
@@ -42,6 +43,8 @@ class StatsModule:
 			with warnings.catch_warnings():
 				warnings.simplefilter("ignore", category=RuntimeWarning)
 				self.print_table_stats(t)
+				for b in self.solutions[t.agent]:
+					self.plot_board(b)
 
 	def print_table_stats(self, table):
 		win = len(self.win_times[table.agent])
@@ -52,7 +55,18 @@ class StatsModule:
 			print("Avg. win time:", np.mean(self.win_times[table.agent]))
 			print("Avg. loss time:", np.mean(self.loss_times[table.agent]))
 			print()
-
+	
+	def plot_board(self, board):
+		q = len(board)
+		im = np.zeros((q, q))
+		for i in board:
+			im[i, board[i]] = 1
+		dpp = 15
+		im = np.repeat(np.repeat(im, dpp, axis=0), dpp, axis=1)
+		num = "".join(map(lambda k: str(k), board))
+		path = './plots/' + str(q).zfill(2) + 'board' + num + '.png'
+		plt.imsave(fname=path, arr=im, cmap=plt.cm.binary)
+		
 	def add_win(self, table):
 		"""Called when agent reports winning combination as it's state. Returns the number of new
 		solutions."""

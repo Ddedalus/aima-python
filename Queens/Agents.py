@@ -4,7 +4,6 @@ from Queens.utility_measures import *
 def steepestAscentAgent():
 	state = yield "steepestAscentAgent"
 	while True:
-		# yield "Success", np.arange(0, 7, 1, dtype=int)
 		cols = count_collisions(state)
 		if cols == 0:
 			state = yield "Success", state
@@ -16,8 +15,8 @@ def steepestAscentAgent():
 				state = yield "NoOp", state
 
 
-def plateauExplorerGenerator():
-	state = yield "plateauExplorerGenerator"
+def plateauExplorerAgent():
+	state = yield "plateauExplorerAgent"
 	plateau = None
 	while True:
 		cols = count_collisions(state)
@@ -40,7 +39,7 @@ def plateauExplorerGenerator():
 				state = yield "NoOp", state
 
 
-def plateauLimitedGenerator(threshold):
+def plateauLimitedAgent(threshold):
 	state = yield "PlateauLimited, max={}".format(threshold)
 	plateau, count = None, 0
 	while True:
@@ -70,7 +69,7 @@ def plateauLimitedGenerator(threshold):
 				state = yield "NoOp", state
 
 
-def masterBeamGenerator(queens):
+def masterBeamAgent(queens):
 	tables = yield "Master Beam Generator"
 	k = len(tables)
 	while True:
