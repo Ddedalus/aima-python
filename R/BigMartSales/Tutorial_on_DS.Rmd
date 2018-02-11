@@ -1,0 +1,61 @@
+---
+title: "https://www.analyticsvidhya.com/blog/2016/02/complete-tutorial-learn-data-science-scratch/#one"
+output: html_notebook
+---
+
+```{r}
+path <- "~/Code/Henkel/Learning/aima-python/R/BigMartSales/"
+setwd(path)
+```
+```{r}
+
+```
+Load datafiles downloaded from https://datahack.analyticsvidhya.com/contest/practice-problem-big-mart-sales-iii/
+```{r}
+train <- read.csv(file = "./Train_UWu5bXk.csv")
+test <- read.csv(file = "./Test_u94Q5KV.csv")
+```
+
+```{r}
+str(train)
+cat('\n\n Summary: \n')
+summary(train)
+```
+```{r}
+table(is.na(train))
+colSums(is.na(train))
+```
+```{r}
+library(ggplot2)
+ggplot(train, aes(x= Item_Weight, y = Item_Visibility)) + geom_point(size = 2.5, color="navy") + ylab("Item Visibility") + xlab("Item Weight") + ggtitle("Item Visibility vs Item Outlet Sales")
+```
+
+```{r}
+test$Item_Outlet_Sales <- mean(train$Item_Outlet_Sales)
+dim(test)
+combi <- rbind(train, test)
+combi$Item_Weight[is.na(combi$Item_Weight)] <- median(combi$Item_Weight, na.rm = TRUE)
+table(is.na(combi))
+```
+
+```{r}
+combi$Item_Visibility <- ifelse(combi$Item_Visibility == 0, median(combi$Item_Visibility), combi$Item_Visibility)
+```
+```{r}
+levels(combi$Item_Fat_Content)
+library(plyr)
+combi$Item_Fat_Content <- revalue(combi$Item_Fat_Content, c("LF"="Low Fat", "low fat"="Low Fat", "reg"="Regular"))
+```
+
+```{r}
+levels(combi$Outlet_Size)
+```
+
+```{r}
+summary(combi)
+```
+
+```{r}
+?group_by
+```
+

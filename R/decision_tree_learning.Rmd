@@ -1,0 +1,82 @@
+---
+title: "Chi^2 prunning"
+output: html_notebook
+---
+Data generation:
+```{r}
+samples = 2000
+a1 = runif(samples, 0, 1) < 0.5;
+a2 = runif(samples, 0, 1) < 0.5;
+ans = xor(a1, a2);
+ts = data.frame(a1, a2, ans);
+colnames(ts) <- c("A1", "A2", "Ans");
+ts
+```
+Some helper functions:
+```{r}
+# return the most likely answer when no further evidence is avaialable
+getmode <- function(v) {
+   length(v["Ans"] == TRUE) > length(v["Ans"])/2
+}
+```
+
+```{r}
+# gives entropy contained in a list of boolean values
+booleanEntropy <- function(truth_table){
+  tab = table(truth_table);
+  if(! "TRUE" %in% names(tab) || ! "FALSE" %in% names(tab))
+    return(0)
+  pos <- table(truth_table)["FALSE"]
+  names(pos) <- "bool entropy"
+  p <- pos/length(truth_table) 
+  return(- p * log2(p) - (1-p) * log2(1-p))
+}
+```
+
+```{r}
+# calculates information gain of splitting by given attribute
+importance <- function(atr, examples){
+  val1 = examples[examples[atr] == TRUE, ]
+  val2 = examples[examples[atr] == FALSE, ]
+  s_true <- booleanEntropy(val1[,"Ans"])
+  s_false <- booleanEntropy(val2[, "Ans"])
+  print(paste("Entropies:", s_true, s_false))
+  R <- (s_false*length(val1[, "Ans"]) + 
+          s_true*length(val2[, "Ans"]))/(length(examples[, atr]))
+  names(R) <- paste("Gain on", atr)
+  return(-R + booleanEntropy(examples[,"Ans"])) # strange ordering to preserve name
+}
+importance("Ans", ts)
+```
+
+
+Decision tree learning function:
+```{r}
+decisionTreeLearning <- function(examples, attributes, parent_examples){
+  if (length(examples[,"Ans"]) == 0)
+    return(getmode(parent_examples))
+    # return most probable answer as there is no training data left
+  else if( length(attributes) == 0)
+    return(getmode(examples))
+  else if (length(table(examples["Ans"]))) < 2):
+    return(examples["Ans", 1])
+  
+  A = max(attributes, key(a)=importance(a, examples))
+  # choose the most promissing attribute to condition on
+  tree = new Tree(root=A)
+  for( value in A.values()){
+    exs = examples[e.A == value]
+    subtree = decisionTreeLearning(exs, attributes.remove(A), examples)
+    # note implementation should probably wrap the trivial case returns into trees for consistency
+    tree.addSubtreeAsBranch(subtree, label=(A, value)
+  }
+  
+  return(tree)
+}
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
